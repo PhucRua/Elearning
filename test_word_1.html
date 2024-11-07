@@ -1,0 +1,906 @@
+
+        <!DOCTYPE html>
+        <html lang="vi">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Bài kiểm tra trực tuyến</title>
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            <script>
+                MathJax = {
+                    tex: {
+                        inlineMath: [['$', '$'], ['\\(', '\\)']],
+                        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+                    },
+                    svg: {
+                        fontCache: 'global'
+                    }
+                };
+            </script>
+            <style>
+                /* Styles for the overall page */
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f0f0f0;
+                    color: #333;
+                    padding: 20px;
+                }
+                .container {
+                    background-color: #fff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    max-width: 800px;
+                    margin: auto;
+                }
+                h2 {
+                    text-align: center;
+                    color: #007bff;
+                }
+                /* Timer styles */
+                #timer {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #007bff;
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    font-size: 18px;
+                    z-index: 1000;
+                }
+                /* Styles for input fields */
+                #student-name {
+                    width: 100%;
+                    padding: 10px;
+                    margin-bottom: 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    font-size: 16px;
+                }
+                #student-name:focus {
+                    border-color: #007bff;
+                    outline: none;
+                    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+                }
+                /* Styles for questions */
+                .question {
+                    background-color: #eaf4fc;
+                    border: 2px solid #007bff;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    border-radius: 8px;
+                }
+                .question p {
+                    margin-bottom: 15px;
+                }
+                /* Styles for options */
+                .options label {
+                    display: block;
+                    margin-bottom: 10px;
+                    cursor: pointer;
+                    padding: 10px;
+                    border-radius: 5px;
+                    transition: background-color 0.2s;
+                }
+                .options label:hover {
+                    background-color: #e3f2fd;
+                }
+                /* Styles for input elements */
+                .options input[type="radio"],
+                .options input[type="checkbox"] {
+                    margin-right: 10px;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    appearance: none;
+                    border: 2px solid #007bff;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    outline: none;
+                    cursor: pointer;
+                }
+                .options input[type="radio"]:checked,
+                .options input[type="checkbox"]:checked {
+                    background-color: #007bff;
+                }
+                .options input[type="checkbox"] {
+                    border-radius: 3px;
+                }
+                /* Styles for buttons */
+                #check-button, #submit-button {
+                    display: block;
+                    margin: 20px auto;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+                #check-button:hover, #submit-button:hover {
+                    background-color: #0056b3;
+                }
+                /* Styles for solution text */
+                .solution-text {
+                    margin-top: 10px;
+                    padding: 10px;
+                    background-color: #e9ecef;
+                    border-radius: 3px;
+                    display: none;
+                }
+                /* Styles for images */
+                .center-image {
+                    text-align: center;
+                    margin: 10px 0;
+                }
+                .center-image img {
+                    max-width: 100%;
+                    height: auto;
+                }
+                /* Styles for question numbers and prefixes */
+                .question-number {
+                    color: #007bff;
+                    font-weight: bold;
+                }
+                .option-prefix {
+                    color: #007bff;
+                    font-weight: bold;
+                }
+                /* Styles for short answer inputs */
+                input[type="text"].short-answer {
+                    width: 100%;
+                    padding: 5px;
+                    margin-top: 10px;
+                }
+                /* Styles for results */
+                .results-container {
+                    margin-top: 20px;
+                    padding: 15px;
+                    background-color: #e9ecef;
+                    border-radius: 5px;
+                }
+                .result-item {
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    background-color: #fff;
+                    border-radius: 3px;
+                }
+                .result-item.correct {
+                    border-left: 5px solid #28a745;
+                }
+                .result-item.incorrect {
+                    border-left: 5px solid #dc3545;
+                }
+            </style>
+        </head>
+        <body>
+            <div id="timer"></div>
+            <div class="container">
+                <h2>Bài kiểm tra trực tuyến</h2>
+                <input type="text" id="student-name" placeholder="Nhập tên học sinh">
+                <!-- Hidden fields for answer keys -->
+                <input type="hidden" id="answer-key-mc" value="DCDBA">
+                <input type="hidden" id="answer-key-tf" value="ĐSĐS;SĐSĐ">
+                <input type="hidden" id="answer-key-sa" value="5,31">
+                <div id="questions">
+                    
+        <div class='question' id='q1' data-type='multiple-choice'>
+            <p><span class="question-number">Câu 1.</span>	Biết $\int\limits_1^5{f\left(x\right)dx}=4$. Giá trị của $\int\limits_1^5{3f\left(x\right)dx}$ bằng</p>
+            <div class='options'>
+                <label>
+                    <input type="radio" name="mc-1" value="A" autocomplete="off">
+                    <span class="option-prefix">A.</span> $7$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-1" value="B" autocomplete="off">
+                    <span class="option-prefix">B.</span> $\dfrac{4}{5}$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-1" value="C" autocomplete="off">
+                    <span class="option-prefix">C.</span> $64$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-1" value="D" autocomplete="off">
+                    <span class="option-prefix">D.</span> $12$.
+                </label>
+                </div>
+            
+                <div id="solution-1" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Ta có $\int\limits_1^5{3f\left(x\right)dx}=3\int\limits_1^5{f\left(x\right)dx}=3.4=12$.</div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q2' data-type='multiple-choice'>
+            <p><span class="question-number">Câu 2.</span>	Trong không gian $Oxyz$, hình chiếu vuông góc của điểm $A\left(1;2;5\right)$ trên trục $Ox$ có tọa độ là</p>
+            <div class='options'>
+                <label>
+                    <input type="radio" name="mc-2" value="A" autocomplete="off">
+                    <span class="option-prefix">A.</span> $\left(0;2;0\right)$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-2" value="B" autocomplete="off">
+                    <span class="option-prefix">B.</span> $\left(0;0;5\right)$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-2" value="C" autocomplete="off">
+                    <span class="option-prefix">C.</span> $\left(1;0;0\right)$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-2" value="D" autocomplete="off">
+                    <span class="option-prefix">D.</span> $\left(0;2;5\right)$.
+                </label>
+                </div>
+            
+                <div id="solution-2" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Hình chiếu vuông góc của điểm $A\left(1;2;5\right)$ trên trục $Ox$ có tọa độ là $\left(1;0;0\right)$.</div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q3' data-type='multiple-choice'>
+            <p><span class="question-number">Câu 3.</span>	Cho hình trụ có bán kính đáy $r=4$ và độ dài đường sinh $l=3$. Diện tích xung quanh của hình trụ đã cho bằng</p>
+            <div class='options'>
+                <label>
+                    <input type="radio" name="mc-3" value="A" autocomplete="off">
+                    <span class="option-prefix">A.</span> $48\pi $.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-3" value="B" autocomplete="off">
+                    <span class="option-prefix">B.</span> $12\pi $.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-3" value="C" autocomplete="off">
+                    <span class="option-prefix">C.</span> $16\pi $.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-3" value="D" autocomplete="off">
+                    <span class="option-prefix">D.</span> $24\pi $.
+                </label>
+                </div>
+            
+                <div id="solution-3" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Hình trụ có bán kính đáy $r=4$ và độ dài đường sinh $l=3$ thì có diện tích xung quanh là ${{S}_{xq}}=2\pi rl=2\pi .4.3=24\pi $.</div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q4' data-type='multiple-choice'>
+            <p><span class="question-number">Câu 4.</span>	Trên mặt phẳng tọa độ, biết $M\left(-1;3\right)$ là điểm biểu diễn của số phức $z$. Phần thực của $z$ bằng</p>
+            <div class='options'>
+                <label>
+                    <input type="radio" name="mc-4" value="A" autocomplete="off">
+                    <span class="option-prefix">A.</span> $3$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-4" value="B" autocomplete="off">
+                    <span class="option-prefix">B.</span> $-1$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-4" value="C" autocomplete="off">
+                    <span class="option-prefix">C.</span> $-3$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-4" value="D" autocomplete="off">
+                    <span class="option-prefix">D.</span> $1$.
+                </label>
+                </div>
+            
+                <div id="solution-4" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Ta có $M\left(-1;3\right)$ là điểm biểu diễn của số phức $z=-1+3i$.<br>Vậy phần thực của số phức $z$ là $-1.$.</div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q5' data-type='multiple-choice'>
+            <p><span class="question-number">Câu 5.</span>	Cấp số nhân $\left({u_n}\right)$ với ${u_1}=2$ và công bội $q=3$. Giá trị ${u_2}$</p>
+            <div class='options'>
+                <label>
+                    <input type="radio" name="mc-5" value="A" autocomplete="off">
+                    <span class="option-prefix">A.</span> $6$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-5" value="B" autocomplete="off">
+                    <span class="option-prefix">B.</span> $9$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-5" value="C" autocomplete="off">
+                    <span class="option-prefix">C.</span> $8$.
+                </label>
+                
+                <label>
+                    <input type="radio" name="mc-5" value="D" autocomplete="off">
+                    <span class="option-prefix">D.</span> $\dfrac{2}{3}$.
+                </label>
+                </div>
+            
+                <div id="solution-5" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Ta có: ${u_2}={u_1}.q=2.3=6$.</div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q6' data-type='true-false'>
+            <p><span class="question-number">Câu 6.</span>	Một cuộc thi bắn cung có 20 người tham gia. Trong lần bắn đầu tiên có 18 người bắn trúng mục tiêu. Trong lần bắn thứ hai có 15 người bắn trúng mục tiêu. Trong lần bắn thứ ba chỉ còn 10 người bắn trúng mục tiêu.</p>
+            <div class='options'>
+                <label>
+                    <input type="checkbox" name="tf-6" value="a" autocomplete="off">
+                    <span class="option-prefix">a)</span> Số người bắn trượt mục tiêu trong lần đầu tiên là 2.
+                </label>
+                
+                <label>
+                    <input type="checkbox" name="tf-6" value="b" autocomplete="off">
+                    <span class="option-prefix">b)</span> Số người bắn trượt mục tiêu trong lần bắn thứ hai là 6.
+                </label>
+                
+                <label>
+                    <input type="checkbox" name="tf-6" value="c" autocomplete="off">
+                    <span class="option-prefix">c)</span> Số người bắn trượt mục tiêu trong lần bắn thứ nhất và thứ hai nhiều nhất là 8.
+                </label>
+                
+                <label>
+                    <input type="checkbox" name="tf-6" value="d" autocomplete="off">
+                    <span class="option-prefix">d)</span> Số người bắn trúng mục tiêu trong cả ba lần bắn ít nhất là 3.
+                </label>
+                </div>
+            
+                <div id="solution-6" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Ta có: ${z_1}+{z_2}=\left(3+2i\right)+\left(2-i\right)=5+i$.<br></div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q7' data-type='true-false'>
+            <p><span class="question-number">Câu 7.</span>	Cho tứ giác ABCD có $M,N$ lần lượt là trung điểm của các cạnh $AB,CD$. Gọi $O$ là trung điểm của đoạn thẳng $MN$ và $G$ là trọng tâm tam giác $ABC$.</p>
+            <div class='options'>
+                <label>
+                    <input type="checkbox" name="tf-7" value="a" autocomplete="off">
+                    <span class="option-prefix">a)</span> $\overrightarrow{DA}+\overrightarrow{DB}=2\overrightarrow{DM}$.
+                </label>
+                
+                <label>
+                    <input type="checkbox" name="tf-7" value="b" autocomplete="off">
+                    <span class="option-prefix">b)</span> $\overrightarrow{DA}+\overrightarrow{DB}+\overrightarrow{DC}=2\overrightarrow{DO}$.
+                </label>
+                
+                <label>
+                    <input type="checkbox" name="tf-7" value="c" autocomplete="off">
+                    <span class="option-prefix">c)</span> $\overrightarrow{DA}+\overrightarrow{DB}+\overrightarrow{DC}=2\overrightarrow{DG}$.
+                </label>
+                
+                <label>
+                    <input type="checkbox" name="tf-7" value="d" autocomplete="off">
+                    <span class="option-prefix">d)</span> $\overrightarrow{DO}=2\overrightarrow{DG}$.
+                </label>
+                </div>
+            
+                <div id="solution-7" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Do đó: $R=\sqrt{9}=3$.</div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q8' data-type='short-answer'>
+            <p><span class="question-number">Câu 8.</span>	Cho hình chữ nhật $ABCD$ có $AB=4,AD=6$. Độ dài của vectơ $\vec{u}=\overrightarrow{AB}+\overrightarrow{AC}$ bằng bao nhiêu?.</p>
+            <div class='options'><input type="text" class="short-answer" name="q8" placeholder="Nhập câu trả lời" autocomplete="off"></div>
+            
+                <div id="solution-8" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Điều kiện: $x&gt;1$<br>Ta có: ${\log_2}\left(x-1\right)=3\Leftrightarrow {\log_2}\left(x-1\right)={\log_2}{2^3}=8$$\Leftrightarrow x-1=8\Leftrightarrow x=9$.</div>
+                </div>
+            
+        </div>
+        
+        <div class='question' id='q9' data-type='short-answer'>
+            <p><span class="question-number">Câu 9.</span>	Để đo khoảng cách từ vị trí $A$ đến vị trí $B$ ở hai bên bờ hồ, bạn Hà tiến hành đo khoảng cách $AC$ và các góc $\widehat{BAC},\widehat{BCA}$. Kết quả nhận được là: $AC=21\text {}\!\!\!\!\text {m},\widehat{BAC}={{58}^\circ}$ và $\widehat{BCA}={{80}^\circ}$ (Hình bên). Khoảng cách từ vị trí $A$ đến vị trí $B$ là bao nhiêu mét (làm tròn kết quả đến hàng đơn vị của mét)? .<div class="center-image"><img src="data:image/png;base64,/9j/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/AABEIAXMBWgMBIgACEQEDEQH/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+gEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APf6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiig9KACiue13xEdGurO2FlPdyXZKxrEQOfQ/hmpbbXhLqCWV1azWc827yRIMiQDqQfpigDcopF6UtABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUhGfypksscKGSV1RFGSzHAFMjmS4jDxSqyN0ZSCKAOdvVe88dWQiRWWyt3dy4GAWIUfoDUdoLq58b3A1AxOtlbKbTySRt8wkNu9ztXH0NadvoaWl/dXiXtz5tzjzCdpAx06g4qXTdFg0+5uLoSyz3VxgSTSsCxUEkDgDjmmBqDgUtAopAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFIelByAcVl6zqv9mabLOqh5yNkMWeZJDwq/nihAcp8R724u9OfRtODtdmP7TLjgJGMg5Pvg/lWn8PIBD4K04CXzNybs+me1T6Roc0GkXj6g4m1G9U/aG644wEHsP6movAStH4WihZShhd49p7YaqA6rFG0UtFSAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUjcD3oAhuLiG1geeeRY441LM7dAB3rldNs4vE2sx+ILgSi2tzss4GPynH/LQ+5zx9Kk1a4ude1r+w7eMf2ehH22T+8P7g/CuphhSGJY41CogCgDoAOKYC4HSub8KrLBdazbStkR3hZfoea6Zuh+lYemIsOv6wmeXeOXHttApAbo6UUg44paACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKQ9KABjgdqxtd1F4ok0+zlVdRuwVgB/h9W/AZq9qF9Bp9jNdXL7IYkLOe4Ht7+lYXhyz+3XUviS7gMd1djEUT9YYhwAPc4yfrTA1tG0waVp8cBffMfmlk/vueSa06aBzTqQCHHesB51h8cRwFP8AXWJbPuHroK5rUy8PjPSJtoMckbwk+/WgDpRRQKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoopCcGgBaKTdk+tIWx2oAdRTc+1G4YzQA6imlgBmjf7GgBxpjNgUFhjOPpXLeItTnvLyLQNKl2Xk/zSygZESDr9Ce1CAiXzfFOuyRtj+xLKT7oHy3MgGR+AJB+orrkQKMAAAcADsKq6XpsGlWENlbAiKIEDPU5OST75Jq7QAUUUUAIa5vxQGjfTLtZAnkXa5J754rpDXOeNI/M8Ny/KW2yIx46YNAHSA5opqvuUEdDzThQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQ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" alt="Question Image"></div></p>
+            <div class='options'><input type="text" class="short-answer" name="q9" placeholder="Nhập câu trả lời" autocomplete="off"></div>
+            
+                <div id="solution-9" class="solution-text" style="display:none;">
+                    <strong>Lời giải:</strong>
+                    <div><br>Ta có: $D=R\backslash\left\{1\right\}$ và $\underset{x\to\pm \in fty}{\mathop{\lim}}\,y=5$. Suy ra đồ thị hàm số có tiệm cận ngang $y=5.$.<br><br><br><br></div>
+                </div>
+            
+        </div>
+        
+                </div>
+                <button id="submit-button">Nộp bài</button>
+                <button id="check-button" style="display:none;">Kiểm tra kết quả</button>
+            </div>
+
+            <script>
+                localStorage.clear();  // Clear localStorage at the start
+
+                // Timer
+                let timeLeft = 60 * 60;
+                const timerDisplay = document.getElementById('timer');
+
+                const timer = setInterval(function() {
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerDisplay.innerHTML = `Thời gian còn lại: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        document.getElementById("submit-button").click();
+                        alert('Hết thời gian làm bài!');
+                    }
+                    timeLeft--;
+                }, 1000);
+
+                // Auto-save answers
+                function saveAnswers() {
+                    const questions = document.querySelectorAll('.question');
+                    const answers = {};
+                    
+                    questions.forEach((question, index) => {
+                        const questionType = question.getAttribute('data-type');
+                        if (questionType === 'multiple-choice') {
+                            const selected = question.querySelector('input[type="radio"]:checked');
+                            answers[`q${index+1}`] = selected ? selected.value : '';
+                        } else if (questionType === 'true-false') {
+                            const checkboxes = question.querySelectorAll('input[type="checkbox"]');
+                            answers[`q${index+1}`] = Array.from(checkboxes).map(cb => cb.checked ? 'Đ' : 'S').join('');
+                        } else if (questionType === 'short-answer') {
+                            const input = question.querySelector('input[type="text"]');
+                            answers[`q${index+1}`] = input ? input.value : '';
+                        }
+                    });
+                    
+                    localStorage.setItem('savedAnswers', JSON.stringify(answers));
+                }
+
+                // Auto-save every 30 seconds
+                setInterval(saveAnswers, 30000);
+
+                // Restore answers on page load
+                window.onload = function() {
+                    const savedAnswers = localStorage.getItem('savedAnswers');
+                    if (savedAnswers) {
+                        const answers = JSON.parse(savedAnswers);
+                        const questions = document.querySelectorAll('.question');
+                        
+                        questions.forEach((question, index) => {
+                            const questionId = `q${index+1}`;
+                            const questionType = question.getAttribute('data-type');
+                            const savedAnswer = answers[questionId];
+                            
+                            if (savedAnswer) {
+                                if (questionType === 'multiple-choice') {
+                                    const radio = question.querySelector(`input[value="${savedAnswer}"]`);
+                                    if (radio) {
+                                        radio.checked = true;
+                                    }
+                                } else if (questionType === 'true-false') {
+                                    const checkboxes = question.querySelectorAll('input[type="checkbox"]');
+                                    savedAnswer.split('').forEach((val, i) => {
+                                        if (checkboxes[i]) {
+                                            checkboxes[i].checked = val === 'Đ';
+                                        }
+                                    });
+                                } else if (questionType === 'short-answer') {
+                                    const input = question.querySelector('input[type="text"]');
+                                    if (input) {
+                                        input.value = savedAnswer;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
+                let correctAnswers = {
+                    mc: document.getElementById('answer-key-mc').value,
+                    tf: document.getElementById('answer-key-tf').value.split(';'),
+                    sa: document.getElementById('answer-key-sa').value.split(',')
+                };
+
+                // Update checkAnswers function
+                function checkAnswers() {
+                    let mcAnswers = '';
+                    let tfAnswers = '';
+                    let saAnswers = '';
+                    
+                    const questions = document.querySelectorAll('.question');
+
+                    questions.forEach((question) => {
+                        const questionType = question.getAttribute('data-type');
+
+                        if (questionType === 'multiple-choice') {
+                            const selectedOption = question.querySelector('input[type="radio"]:checked');
+                            mcAnswers += selectedOption ? selectedOption.value : ' ';
+                        } else if (questionType === 'true-false') {
+                            const checkboxes = question.querySelectorAll('input[type="checkbox"]');
+                            let answer = '';
+                            checkboxes.forEach(checkbox => {
+                                answer += checkbox.checked ? 'Đ' : 'S';
+                            });
+                            tfAnswers += answer + ';';
+                        } else if (questionType === 'short-answer') {
+                            const input = question.querySelector('input[type="text"]');
+                            saAnswers += (input ? input.value.trim() : '') + ',';
+                        }
+                    });
+
+                    // Save answers to localStorage
+                    localStorage.setItem('mcAnswers', mcAnswers);
+                    localStorage.setItem('tfAnswers', tfAnswers);
+                    localStorage.setItem('saAnswers', saAnswers);
+                }
+
+                // Check all questions answered
+                function checkAllQuestionsAnswered() {
+                    const questions = document.querySelectorAll('.question');
+                    let unanswered = [];
+                    
+                    questions.forEach((question, index) => {
+                        const questionType = question.getAttribute('data-type');
+                        let answered = false;
+                        
+                        if (questionType === 'multiple-choice') {
+                            answered = question.querySelector('input[type="radio"]:checked') !== null;
+                        } else if (questionType === 'true-false') {
+                            const checkboxes = question.querySelectorAll('input[type="checkbox"]:checked');
+                            answered = checkboxes.length > 0;
+                        } else if (questionType === 'short-answer') {
+                            const input = question.querySelector('input[type="text"]');
+                            answered = input && input.value.trim() !== '';
+                        }
+                        
+                        if (!answered) {
+                            unanswered.push(index + 1);
+                        }
+                    });
+                    
+                    return unanswered;
+                }
+
+                // Submit button event
+                document.getElementById("submit-button").addEventListener("click", async function() {
+                    // Check student name
+                    const studentName = document.getElementById('student-name').value;
+                    if (!studentName.trim()) {
+                        alert('Vui lòng nhập tên của bạn!');
+                        return;
+                    }
+
+                    // Check unanswered questions
+                    const unanswered = checkAllQuestionsAnswered();
+                    if (unanswered.length > 0) {
+                        if (!confirm(`Bạn chưa trả lời các câu: ${unanswered.join(', ')}. Bạn vẫn muốn nộp bài?`)) {
+                            return;
+                        }
+                    }
+
+                    if (!confirm('Bạn có chắc chắn muốn nộp bài?')) {
+                        return;
+                    }
+
+                    // Check and save results
+                    checkAnswers();
+
+                    async function sendResultsToGoogleForms(mcAnswers, tfAnswers, saAnswers) {
+                        const formId = '123';
+                        const studentName = document.getElementById('student-name').value;
+                        
+                        // Use URLSearchParams
+                        const formData = new URLSearchParams();
+                        
+                        // Add entries with corresponding IDs
+                        formData.append('entry.1589786809', studentName); 
+                        formData.append('entry.1160062636', mcAnswers || 'Không có đáp án trắc nghiệm');
+                        formData.append('entry.1098757178', tfAnswers || 'Không có đáp án đúng/sai');
+                        formData.append('entry.2029725840', saAnswers || 'Không có đáp án ngắn');
+
+                        try {
+                            const response = await fetch(`https://docs.google.com/forms/d/e/${formId}/formResponse`, {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                body: formData
+                            });
+                            console.log('Kết quả đã được gửi lên Google Forms.');
+                            return true;
+                        } catch (error) {
+                            console.error('Lỗi khi gửi kết quả:', error);
+                            return false;
+                        }
+                    }
+
+                    // Get answers from localStorage
+                    const mcAnswers = localStorage.getItem('mcAnswers');
+                    const tfAnswers = localStorage.getItem('tfAnswers');
+                    const saAnswers = localStorage.getItem('saAnswers');
+
+                    // Send results to Google Form
+                    try {
+                        const submitResult = await sendResultsToGoogleForms(mcAnswers, tfAnswers, saAnswers);
+                        if (submitResult) {
+                            // Show solutions
+                            document.querySelectorAll('.solution-text').forEach(solutionDiv => {
+                                solutionDiv.style.display = 'block';
+                            });
+                            if (window.MathJax) {
+                                MathJax.typesetPromise();
+                            }
+                            this.style.display = 'none';
+                            document.getElementById("check-button").style.display = 'block';
+                            alert('Bài làm của bạn đã được nộp thành công!');
+                            clearInterval(timer); // Stop the countdown timer
+                        } else {
+                            alert('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại!');
+                        }
+                    } catch (error) {
+                        console.error('Lỗi khi nộp bài:', error);
+                        alert('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại!');
+                    }
+                });
+
+                document.getElementById("check-button").addEventListener("click", function() {
+                    displayDetailedResults();
+                    this.style.display = 'none';
+                });
+
+                // Update displayDetailedResults function
+                function displayDetailedResults() {
+                    let quizResults = [];
+                    let mcIndex = 0;
+                    let tfIndex = 0;
+                    let saIndex = 0;
+                    
+                    // Get correct answers
+                    const mcCorrectAnswers = correctAnswers.mc;
+                    const tfCorrectAnswers = correctAnswers.tf;
+                    const saCorrectAnswers = correctAnswers.sa;
+                    
+                    // Get user's answers
+                    const mcAnswers = localStorage.getItem('mcAnswers') || '';
+                    const tfAnswers = (localStorage.getItem('tfAnswers') || '').split(';');
+                    const saAnswers = (localStorage.getItem('saAnswers') || '').split(',');
+
+                    const questions = document.querySelectorAll('.question');
+                    
+                    questions.forEach((question, index) => {
+                        const questionType = question.getAttribute('data-type');
+                        let userAnswer = '';
+                        let correctAnswer = '';
+                        let isCorrect = false;
+
+                        if (questionType === 'multiple-choice') {
+                            correctAnswer = mcCorrectAnswers[mcIndex];
+                            userAnswer = mcAnswers[mcIndex] || 'Không chọn';
+                            isCorrect = userAnswer === correctAnswer;
+                            mcIndex++;
+                        } else if (questionType === 'true-false') {
+                            const tfResult = tfAnswers[tfIndex] || '';
+                            userAnswer = tfResult;
+                            correctAnswer = tfCorrectAnswers[tfIndex] || '';
+                            isCorrect = userAnswer === correctAnswer;
+                            tfIndex++;
+                        } else if (questionType === 'short-answer') {
+                            correctAnswer = saCorrectAnswers[saIndex];
+                            userAnswer = saAnswers[saIndex] || 'Không trả lời';
+                            // Compare without case sensitivity and trim whitespaces
+                            isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+                            saIndex++;
+                        }
+
+                        quizResults.push({
+                            questionNumber: index + 1,
+                            userAnswer: userAnswer || 'Không trả lời',
+                            correctAnswer: correctAnswer,
+                            isCorrect: isCorrect
+                        });
+                    });
+
+                    // Calculate score
+                    const score = quizResults.filter(result => result.isCorrect).length;
+                    const totalQuestions = quizResults.length;
+
+                    // Create HTML to display results
+                    let resultsHtml = `
+                        <div class="results-container">
+                            <h3>Kết quả chi tiết:</h3>
+                            <h4>Điểm số: ${score}/${totalQuestions}</h4>
+                    `;
+
+                    quizResults.forEach(result => {
+                        const resultClass = result.isCorrect ? 'correct' : 'incorrect';
+                        resultsHtml += `
+                            <div class="result-item ${resultClass}">
+                                <strong>Câu ${result.questionNumber}:</strong> 
+                                ${result.isCorrect ? '✓ Đúng' : '✗ Sai'}<br>
+                                Đáp án của bạn: ${result.userAnswer}<br>
+                                Đáp án đúng: ${result.correctAnswer}
+                            </div>
+                        `;
+                    });
+
+                    resultsHtml += '</div>';
+
+                    // Append results to the page
+                    const resultsContainer = document.createElement('div');
+                    resultsContainer.innerHTML = resultsHtml;
+                    document.querySelector('.container').appendChild(resultsContainer);
+
+                    // Show all solutions
+                    document.querySelectorAll('.solution-text').forEach(solution => {
+                        solution.style.display = 'block';
+                    });
+
+                    // Update MathJax
+                    if (window.MathJax) {
+                        MathJax.typesetPromise();
+                    }
+                }
+
+                // Code to prevent viewing source and protect content
+                (function() {
+                    // Disable right-click
+                    document.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+
+                    // Disable keyboard shortcuts
+                    document.addEventListener('keydown', function(e) {
+                        // Disable F12
+                        if (e.key === 'F12' || e.keyCode === 123) {
+                            e.preventDefault();
+                            return false;
+                        }
+                        
+                        if (e.ctrlKey) {
+                            // Disable Ctrl+U
+                            if (e.key === 'u' || e.keyCode === 'U'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                            // Disable Ctrl+S
+                            if (e.key === 's' || e.keyCode === 'S'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                            // Disable Ctrl+P
+                            if (e.key === 'p' || e.keyCode === 'P'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                            // Disable Ctrl+A
+                            if (e.key === 'a' || e.keyCode === 'A'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                            // Disable Ctrl+C
+                            if (e.key === 'c' || e.keyCode === 'C'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                        }
+
+                        if (e.ctrlKey && e.shiftKey) {
+                            // Disable Ctrl+Shift+I
+                            if (e.key === 'i' || e.keyCode === 'I'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                            // Disable Ctrl+Shift+J
+                            if (e.key === 'j' || e.keyCode === 'J'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                            // Disable Ctrl+Shift+C
+                            if (e.key === 'c' || e.keyCode === 'C'.charCodeAt(0)) {
+                                e.preventDefault();
+                                return false;
+                            }
+                        }
+                    });
+
+                    // Disable drag and drop
+                    document.addEventListener('dragstart', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+
+                    // Disable copy
+                    document.addEventListener('copy', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+
+                    // Disable cut
+                    document.addEventListener('cut', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+
+                    // Disable page save
+                    window.addEventListener('beforeunload', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+
+                    // Disable developer tools
+                    setInterval(function() {
+                        debugger;
+                    }, 100);
+
+                    // Check and disable devtools
+                    let devtools = function() {};
+                    devtools.toString = function() {
+                        this.opened = true;
+                        return '';
+                    };
+                    
+                    setInterval(function() {
+                        console.log(devtools);
+                        console.clear();
+                    }, 1000);
+
+                    // Disable view-source
+                    if(window.location.href.indexOf('view-source:') !== -1) {
+                        window.location.href = window.location.href.replace('view-source:', '');
+                    }
+
+                    // Prevent inspect element
+                    document.addEventListener('keydown', function(e) {
+                        if(e.key === 'F12' || 
+                           (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))) {
+                            e.preventDefault();
+                        }
+                    });
+
+                    // Disable Print Screen key
+                    document.addEventListener('keyup', function(e) {
+                        if(e.key === 'PrintScreen') {
+                            navigator.clipboard.writeText('');
+                        }
+                    });
+
+                    // Add watermark to prevent screenshots (optional)
+                    function addWatermark() {
+                        const watermark = document.createElement('div');
+                        watermark.style.cssText = `
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%) rotate(-45deg);
+                            font-size: 60px;
+                            opacity: 0.1;
+                            pointer-events: none;
+                            z-index: 9999;
+                            white-space: nowrap;
+                        `;
+                        watermark.textContent = 'BÀI KIỂM TRA - KHÔNG SAO CHÉP';
+                        document.body.appendChild(watermark);
+                    }
+                    addWatermark();
+                })();
+            </script>
+
+        </body>
+        </html>
+        
