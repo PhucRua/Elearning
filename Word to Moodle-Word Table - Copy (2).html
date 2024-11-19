@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ai Là Triệu Phú</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js">
+            // Khởi tạo câu hỏi
+            const initialQuestions = [{"question": "Câu 1.\tBiết $\\int\\limits_1^5{f\\left(x\\right)dx}=4$. Giá trị của $\\int\\limits_1^5{3f\\left(x\\right)dx}$ bằng", "options": ["$7$.", "$\\dfrac{4}{5}$.", "$64$.", "$12$."], "correct": 3}, {"question": "Câu 2.\tTrong không gian $Oxyz$, hình chiếu vuông góc của điểm $A\\left(1;2;5\\right)$ trên trục $Ox$ có tọa độ là", "options": ["$\\left(0;2;0\\right)$.", "$\\left(0;0;5\\right)$.", "$\\left(1;0;0\\right)$.", "$\\left(0;2;5\\right)$."], "correct": 2}, {"question": "Câu 3.\tCho hình trụ có bán kính đáy $r=4$ và độ dài đường sinh $l=3$. Diện tích xung quanh của hình trụ đã cho bằng", "options": ["$48\\pi $.", "$12\\pi $.", "$16\\pi $.", "$24\\pi $."], "correct": 3}, {"question": "Câu 4.\tTrên mặt phẳng tọa độ, biết $M\\left(-1;3\\right)$ là điểm biểu diễn của số phức $z$. Phần thực của $z$ bằng", "options": ["$3$.", "$-1$.", "$-3$.", "$1$."], "correct": 1}, {"question": "Câu 5.\tCấp số nhân $\\left({u_n}\\right)$ với ${u_1}=2$ và công bội $q=3$. Giá trị ${u_2}$", "options": ["$6$.", "$9$.", "$8$.", "$\\dfrac{2}{3}$."], "correct": 0}];
+            parseQuestions(initialQuestions);
+            </script>
+            
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6">
+            // Khởi tạo câu hỏi
+            const initialQuestions = [{"question": "Câu 1.\tBiết $\\int\\limits_1^5{f\\left(x\\right)dx}=4$. Giá trị của $\\int\\limits_1^5{3f\\left(x\\right)dx}$ bằng", "options": ["$7$.", "$\\dfrac{4}{5}$.", "$64$.", "$12$."], "correct": 3}, {"question": "Câu 2.\tTrong không gian $Oxyz$, hình chiếu vuông góc của điểm $A\\left(1;2;5\\right)$ trên trục $Ox$ có tọa độ là", "options": ["$\\left(0;2;0\\right)$.", "$\\left(0;0;5\\right)$.", "$\\left(1;0;0\\right)$.", "$\\left(0;2;5\\right)$."], "correct": 2}, {"question": "Câu 3.\tCho hình trụ có bán kính đáy $r=4$ và độ dài đường sinh $l=3$. Diện tích xung quanh của hình trụ đã cho bằng", "options": ["$48\\pi $.", "$12\\pi $.", "$16\\pi $.", "$24\\pi $."], "correct": 3}, {"question": "Câu 4.\tTrên mặt phẳng tọa độ, biết $M\\left(-1;3\\right)$ là điểm biểu diễn của số phức $z$. Phần thực của $z$ bằng", "options": ["$3$.", "$-1$.", "$-3$.", "$1$."], "correct": 1}, {"question": "Câu 5.\tCấp số nhân $\\left({u_n}\\right)$ với ${u_1}=2$ và công bội $q=3$. Giá trị ${u_2}$", "options": ["$6$.", "$9$.", "$8$.", "$\\dfrac{2}{3}$."], "correct": 0}];
+            parseQuestions(initialQuestions);
+            </script>
+            
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+            // Khởi tạo câu hỏi
+            const initialQuestions = [{"question": "Câu 1.\tBiết $\\int\\limits_1^5{f\\left(x\\right)dx}=4$. Giá trị của $\\int\\limits_1^5{3f\\left(x\\right)dx}$ bằng", "options": ["$7$.", "$\\dfrac{4}{5}$.", "$64$.", "$12$."], "correct": 3}, {"question": "Câu 2.\tTrong không gian $Oxyz$, hình chiếu vuông góc của điểm $A\\left(1;2;5\\right)$ trên trục $Ox$ có tọa độ là", "options": ["$\\left(0;2;0\\right)$.", "$\\left(0;0;5\\right)$.", "$\\left(1;0;0\\right)$.", "$\\left(0;2;5\\right)$."], "correct": 2}, {"question": "Câu 3.\tCho hình trụ có bán kính đáy $r=4$ và độ dài đường sinh $l=3$. Diện tích xung quanh của hình trụ đã cho bằng", "options": ["$48\\pi $.", "$12\\pi $.", "$16\\pi $.", "$24\\pi $."], "correct": 3}, {"question": "Câu 4.\tTrên mặt phẳng tọa độ, biết $M\\left(-1;3\\right)$ là điểm biểu diễn của số phức $z$. Phần thực của $z$ bằng", "options": ["$3$.", "$-1$.", "$-3$.", "$1$."], "correct": 1}, {"question": "Câu 5.\tCấp số nhân $\\left({u_n}\\right)$ với ${u_1}=2$ và công bội $q=3$. Giá trị ${u_2}$", "options": ["$6$.", "$9$.", "$8$.", "$\\dfrac{2}{3}$."], "correct": 0}];
+            parseQuestions(initialQuestions);
+            </script>
+            
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000033;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header-tools {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .tool-button {
+            min-width: 55px;
+            height: 55px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #004080, #002040);
+            border: 2px solid #0099ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 
+                0 0 10px rgba(0, 153, 255, 0.3),
+                inset 0 0 20px rgba(0, 153, 255, 0.2);
+            padding: 0 10px;
+        }
+
+        .tool-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 153, 255, 0.5);
+        }
+
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 50px;
+        }
+
+        .question-section {
+            position: relative;
+            z-index: 10;
+            padding-top: 180px;
+            padding-bottom: 200px;
+        }
+
+        .question-text {
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 180px;
+            padding: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .option {
+            background: linear-gradient(to right, #000066, #000044);
+            border: 2px solid #0099ff;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 28px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            min-height: 70px;
+            box-shadow: 
+                0 0 10px rgba(0, 153, 255, 0.2),
+                inset 0 0 30px rgba(0, 153, 255, 0.1);
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            background: linear-gradient(45deg, #00ccff, transparent, #00ccff);
+            border-radius: 50px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .option:hover::before {
+            opacity: 1;
+        }
+
+        .option::after {
+            content: '';
+            position: absolute;
+            left: 10px;
+            width: 20px;
+            height: 3px;
+            background: #ffcc00;
+            box-shadow: 0 0 5px #ffcc00;
+        }
+
+        .purple-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .purple-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #9933cc, transparent);
+            opacity: 0.5;
+        }
+
+        .line1 { top: 40%; }
+        .line2 { top: 45%; }
+        .line3 { top: 50%; }
+        .line4 { top: 55%; }
+        .line5 { top: 60%; }
+
+        .light-beam {
+            position: absolute;
+            top: -50%;
+            left: 0;
+            width: 2px;
+            height: 200%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 153, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: moveBeam 8s linear infinite;
+        }
+
+        @keyframes moveBeam {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(1000%) rotate(45deg); }
+        }
+
+        .option-letter {
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .option-text {
+            position: relative;
+            z-index: 2;
+            flex-grow: 1;
+        }
+
+        .option.selected {
+            background: linear-gradient(to right, #cc6600, #993300);
+            border-color: #ff9900;
+        }
+
+        .option.correct {
+            animation: correctBlink 1s infinite;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(to right, #990000, #660000);
+            border-color: #ff0000;
+        }
+
+        @keyframes correctBlink {
+            0% { 
+                background: linear-gradient(to right, #006600, #004400);
+                border-color: #00ff00;
+            }
+            50% { 
+                background: linear-gradient(to right, #008800, #006600);
+                border-color: #00cc00;
+            }
+            100% { 
+                background: linear-gradient(to right, #006600, #004400);
+                border-color: #00ff00;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header-tools">
+            <div class="tool-button" id="play-button">▶️</div>
+            <div class="tool-button" id="timer-display">⏰ 30s</div>
+            <div class="tool-button" id="sound-button">🔊</div>
+            <div class="tool-button fifty-fifty-btn" onclick="useFiftyFifty()">50:50</div>
+            <div class="tool-button audience-poll-btn" onclick="useAudiencePoll()">💎</div>
+            <div class="tool-button" onclick="showHighScores()">🏆</div>
+            <div class="tool-button">✏️</div>
+            <div class="tool-button">🎲</div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-text" id="question-text"></div>
+            <div class="options-grid">
+                <div class="option">
+                    <span class="option-letter">A:</span>
+                    <span class="option-text"></span>
+                </div>
+                <div class="option">
+                    <span class="option-letter">B:</span>
+                    <span class="option-text"></span>
+                </div>
+                <div class="option">
+                    <span class="option-letter">C:</span>
+                    <span class="option-text"></span>
+                </div>
+                <div class="option">
+                    <span class="option-letter">D:</span>
+                    <span class="option-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="purple-lines">
+            <div class="purple-line line1"></div>
+            <div class="purple-line line2"></div>
+            <div class="purple-line line3"></div>
+            <div class="purple-line line4"></div>
+            <div class="purple-line line5"></div>
+        </div>
+
+        <div class="light-beam" style="animation-delay: 0s"></div>
+        <div class="light-beam" style="animation-delay: 2s"></div>
+        <div class="light-beam" style="animation-delay: 4s"></div>
+        <div class="light-beam" style="animation-delay: 6s"></div>
+    </div>
+
+    <script>
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let correctAnswers = 0;
+    let timer;
+    let timeLeft = 30;
+    let canAnswer = true;
+    let isSoundEnabled = true;
+
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+
+    const SOUNDS = {
+        background: new Audio('https://on.soundcloud.com/zMFeegcDFrJTcuhB9'),
+        correct: new Audio('https://on.soundcloud.com/RKp5ALktz3Vw2aRM6'),
+        wrong: new Audio('https://on.soundcloud.com/AXJpv4aBsXMryeEN8'),
+        waiting: new Audio('https://on.soundcloud.com/tFGKPakb7rvLRtLM8'),
+        final: new Audio('https://on.soundcloud.com/AXJpv4aBsXMryeEN8')
+    };
+
+    const styles = `
+        .high-score-modal,
+        .audience-poll-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #001f3f, #000033);
+            border: 2px solid #0099ff;
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0, 153, 255, 0.3);
+        }
+
+        .high-score-modal table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .high-score-modal th,
+        .high-score-modal td {
+            padding: 10px;
+            border: 1px solid #0099ff;
+            text-align: center;
+        }
+
+        .poll-results {
+            margin: 20px 0;
+        }
+
+        .poll-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 10px;
+        }
+
+        .poll-bar label {
+            width: 30px;
+        }
+
+        .poll-bar .bar {
+            height: 20px;
+            background: linear-gradient(to right, #0099ff, #00ccff);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .poll-bar span {
+            min-width: 50px;
+        }
+
+        .lifeline-btn {
+            background: linear-gradient(135deg, #004080, #002040);
+            border: 2px solid #0099ff;
+            border-radius: 10px;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lifeline-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .lifeline-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 153, 255, 0.5);
+        }
+    `;
+
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = styles;
+    document.head.appendChild(styleSheet);
+
+    let highScores = JSON.parse(localStorage.getItem('millionaireHighScores') || '[]');
+
+    function updateHighScores(correctCount) {
+        highScores.push({
+            score: correctCount,
+            total: questions.length,
+            date: new Date().toISOString(),
+            time: timeLeft
+        });
+        highScores.sort((a, b) => b.score - a.score);
+        highScores = highScores.slice(0, 10);
+        localStorage.setItem('millionaireHighScores', JSON.stringify(highScores));
+    }
+
+    function showHighScores() {
+        const scoresHtml = highScores.map((score, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${score.score}/${score.total}</td>
+                <td>${new Date(score.date).toLocaleDateString()}</td>
+            </tr>
+        `).join('');
+
+        const modal = document.createElement('div');
+        modal.innerHTML = `
+            <div class="high-score-modal">
+                <h2>Bảng Xếp Hạng</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hạng</th>
+                            <th>Số câu đúng</th>
+                            <th>Ngày</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${scoresHtml}
+                    </tbody>
+                </table>
+                <button onclick="this.parentElement.remove()">Đóng</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    let fiftyFiftyUsed = false;
+    function useFiftyFifty() {
+        if (fiftyFiftyUsed || !canAnswer) return;
+        
+        const correctIndex = questions[currentQuestionIndex].correct;
+        const options = document.querySelectorAll('.option');
+        let removedCount = 0;
+        
+        for (let i = 0; i < options.length && removedCount < 2; i++) {
+            if (i !== correctIndex) {
+                options[i].style.visibility = 'hidden';
+                removedCount++;
+            }
+        }
+        fiftyFiftyUsed = true;
+        document.querySelector('.fifty-fifty-btn').disabled = true;
+    }
+
+    let audiencePollUsed = false;
+    function useAudiencePoll() {
+        if (audiencePollUsed || !canAnswer) return;
+        
+        const correctIndex = questions[currentQuestionIndex].correct;
+        const audienceVotes = generateAudienceVotes(correctIndex);
+        
+        showAudiencePollResults(audienceVotes);
+        audiencePollUsed = true;
+        document.querySelector('.audience-poll-btn').disabled = true;
+    }
+
+    function generateAudienceVotes(correctIndex) {
+        const votes = [0, 0, 0, 0];
+        const total = 100;
+        
+        votes[correctIndex] = Math.floor(Math.random() * 30) + 40;
+        
+        let remaining = total - votes[correctIndex];
+        for (let i = 0; i < votes.length; i++) {
+            if (i !== correctIndex) {
+                const vote = i === votes.length - 1 
+                    ? remaining 
+                    : Math.floor(Math.random() * remaining);
+                votes[i] = vote;
+                remaining -= vote;
+            }
+        }
+        
+        return votes;
+    }
+
+    function showAudiencePollResults(votes) {
+        const modal = document.createElement('div');
+        modal.innerHTML = `
+            <div class="audience-poll-modal">
+                <h2>Ý Kiến Khán Giả</h2>
+                <div class="poll-results">
+                    ${votes.map((vote, index) => `
+                        <div class="poll-bar">
+                            <label>${String.fromCharCode(65 + index)}</label>
+                            <div class="bar" style="width: ${vote}%"></div>
+                            <span>${vote}%</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <button onclick="this.parentElement.remove()">Đóng</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    function toggleSound() {
+        isSoundEnabled = !isSoundEnabled;
+        const soundButton = document.getElementById('sound-button');
+        soundButton.textContent = isSoundEnabled ? '🔊' : '🔇';
+        
+        Object.values(SOUNDS).forEach(sound => {
+            sound.muted = !isSoundEnabled;
+        });
+    }
+
+    function playSound(soundName) {
+        if (isSoundEnabled && SOUNDS[soundName]) {
+            SOUNDS[soundName].currentTime = 0;
+            SOUNDS[soundName].play();
+        }
+    }
+
+    function startGame() {
+        document.querySelector('.question-section').style.display = 'block';
+        currentQuestionIndex = 0;
+        correctAnswers = 0;
+        resetLifelines();
+        loadQuestion(0);
+        playSound('background');
+    }
+
+    function resetLifelines() {
+        fiftyFiftyUsed = false;
+        audiencePollUsed = false;
+        const fiftyFiftyBtn = document.querySelector('.fifty-fifty-btn');
+        const audiencePollBtn = document.querySelector('.audience-poll-btn');
+        if (fiftyFiftyBtn) fiftyFiftyBtn.disabled = false;
+        if (audiencePollBtn) audiencePollBtn.disabled = false;
+        
+        document.querySelectorAll('.option').forEach(option => {
+            option.style.visibility = 'visible';
+        });
+    }
+
+    function handleTimeOut() {
+        playSound('wrong');
+        canAnswer = false;
+        const options = document.querySelectorAll('.option');
+        const correctIndex = questions[currentQuestionIndex].correct;
+        options[correctIndex].classList.add('correct');
+
+        setTimeout(() => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            } else {
+                playSound('final');
+                const result = `Chúc mừng! Bạn đã trả lời đúng ${correctAnswers}/${questions.length} câu hỏi`;
+                alert(result);
+                updateHighScores(correctAnswers);
+                showHighScores();
+                if (confirm('Bạn có muốn chơi lại không?')) {
+                    startGame();
+                }
+            }
+        }, 2000);
+    }
+
+    function selectAnswer(index) {
+        if (!canAnswer) return;
+        canAnswer = false;
+        clearInterval(timer);
+
+        const options = document.querySelectorAll('.option');
+        const correctIndex = questions[currentQuestionIndex].correct;
+
+        options[index].classList.add('selected');
+        playSound('waiting');
+
+        setTimeout(() => {
+            if (index === correctIndex) {
+                playSound('correct');
+                options[index].classList.add('correct');
+                correctAnswers++;
+            } else {
+                playSound('wrong');
+                options[index].classList.add('incorrect');
+                options[correctIndex].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    loadQuestion(currentQuestionIndex);
+                } else {
+                    playSound('final');
+                    const result = `Chúc mừng! Bạn đã trả lời đúng ${correctAnswers}/${questions.length} câu hỏi`;
+                    alert(result);
+                    updateHighScores(correctAnswers);
+                    showHighScores();
+                    if (confirm('Bạn có muốn chơi lại không?')) {
+                        startGame();
+                    }
+                }
+            }, 2000);
+        }, 1000);
+    }
+
+    document.getElementById('sound-button').addEventListener('click', toggleSound);
+    document.getElementById('play-button').addEventListener('click', startGame);
+
+    function parseQuestions(questionsData) {
+        questions = questionsData;
+        startGame();
+    }
+
+    function loadQuestion(index) {
+        if (!questions[index]) return;
+
+        const question = questions[index];
+        document.getElementById('question-text').innerHTML = question.question;
+        
+        const options = document.querySelectorAll('.option-text');
+        const optionsDiv = document.querySelectorAll('.option');
+        
+        options.forEach((option, i) => {
+            option.innerHTML = question.options[i];
+            optionsDiv[i].onclick = () => selectAnswer(i);
+            optionsDiv[i].classList.remove('selected', 'correct', 'incorrect');
+            optionsDiv[i].style.visibility = 'visible';
+        });
+
+        if (window.MathJax) {
+            MathJax.typesetPromise && MathJax.typesetPromise();
+        }
+
+        canAnswer = true;
+        timeLeft = 30;
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        updateTimerDisplay();
+        timer = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                canAnswer = false;
+                handleTimeOut();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const timerDisplay = document.getElementById('timer-display');
+        if (timerDisplay) {
+            timerDisplay.textContent = `⏰ ${timeLeft}s`;
+        }
+    }
+    
+            // Khởi tạo câu hỏi
+            const initialQuestions = [{"question": "Câu 1.\tBiết $\\int\\limits_1^5{f\\left(x\\right)dx}=4$. Giá trị của $\\int\\limits_1^5{3f\\left(x\\right)dx}$ bằng", "options": ["$7$.", "$\\dfrac{4}{5}$.", "$64$.", "$12$."], "correct": 3}, {"question": "Câu 2.\tTrong không gian $Oxyz$, hình chiếu vuông góc của điểm $A\\left(1;2;5\\right)$ trên trục $Ox$ có tọa độ là", "options": ["$\\left(0;2;0\\right)$.", "$\\left(0;0;5\\right)$.", "$\\left(1;0;0\\right)$.", "$\\left(0;2;5\\right)$."], "correct": 2}, {"question": "Câu 3.\tCho hình trụ có bán kính đáy $r=4$ và độ dài đường sinh $l=3$. Diện tích xung quanh của hình trụ đã cho bằng", "options": ["$48\\pi $.", "$12\\pi $.", "$16\\pi $.", "$24\\pi $."], "correct": 3}, {"question": "Câu 4.\tTrên mặt phẳng tọa độ, biết $M\\left(-1;3\\right)$ là điểm biểu diễn của số phức $z$. Phần thực của $z$ bằng", "options": ["$3$.", "$-1$.", "$-3$.", "$1$."], "correct": 1}, {"question": "Câu 5.\tCấp số nhân $\\left({u_n}\\right)$ với ${u_1}=2$ và công bội $q=3$. Giá trị ${u_2}$", "options": ["$6$.", "$9$.", "$8$.", "$\\dfrac{2}{3}$."], "correct": 0}];
+            parseQuestions(initialQuestions);
+            </script>
+            
+</body>
+</html>
